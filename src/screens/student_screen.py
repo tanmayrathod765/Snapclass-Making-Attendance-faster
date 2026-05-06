@@ -114,15 +114,23 @@ def student_screen():
     photo_source = st.camera_input("Position your face in the center")
 
     if photo_source:
-        img = np.array(Image.open(photo_source))
+        st.caption('Photo captured. Scanning face...')
 
-        with st.spinner('AI is scanning..'):
-            detected, all_ids, num_faces = predict_attendance(img)
+        # Convert to RGB and resize large camera frames for faster detection on cloud CPUs.
+        raw_img = Image.open(photo_source).convert('RGB')
+        if raw_img.width > 960:
+            ratio = 960 / raw_img.width
+            raw_img = raw_img.resize((960, int(raw_img.height * ratio)))
+        img = np.array(raw_img)
+
+        try:
+            with st.spinner('AI is scanning..'):
+                detected, all_ids, num_faces = predict_attendance(img)
 
             if num_faces == 0:
-                st.warning('Face not found!')
-            elif num_faces >1:
-                st.warning('Multiple faces found')
+                st.warning('Face not found! Keep your face centered and improve lighting, then capture again.')
+            elif num_faces > 1:
+                st.warning('Multiple faces found. Please ensure only one face is visible.')
             else:
                 if detected:
                     student_id = list(detected.keys())[0]
@@ -139,6 +147,9 @@ def student_screen():
                 else:
                     st.info('Face not recognized! You might be a new student!')
                     show_registration = True
+        except Exception as exc:
+            st.error(f'Face scan failed: {exc}')
+            st.info('Please clear the photo and capture again.')
     if show_registration:
         with st.container(border=True):
             st.header('Register new Profile')
