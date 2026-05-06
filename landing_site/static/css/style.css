@@ -371,9 +371,10 @@ h4 {
 }
 
 .tech-card {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: #ffffff;
     padding: 30px 20px;
     border-radius: 30px;
+    border: 1px solid #e5e7eb;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -397,14 +398,14 @@ h4 {
 .tech-card h4 {
     font-size: 1.15rem;
     margin-bottom: 6px;
-    color: white;
+    color: var(--text-dark);
     font-family: 'Outfit', sans-serif;
     font-weight: 800;
 }
 
 .tech-card p {
     font-size: 0.85rem;
-    color: white;
+    color: var(--text-muted);
     line-height: 1.4;
 }
 
